@@ -59,7 +59,19 @@ router.get('/between/:start_year/:end_year',(req,res,next)=>{
 
 
 router.get('/',(req,res,next)=>{
-    const promise=movie.find({})
+    const promise=movie.aggregate([
+        {
+            $lookup:{
+                from:'directors',
+                localField:'director_id',
+                foreignField:'_id',
+                as:'directors'
+            },
+        },
+        {
+            $unwind:'$directors'
+        }
+    ])
 
     promise.then((data)=>{
         res.json(data)
