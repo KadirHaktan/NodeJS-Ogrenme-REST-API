@@ -1,0 +1,21 @@
+
+const mocha=require('mocha')
+const chai=require('chai')
+const chai_Http=require('chai-http')
+
+const should=chai.should()
+
+const server=require('../app')
+
+chai.use(chai_Http)
+
+describe('Node JS Server Movies',()=>{
+    it('(GET /) returns to home page',(done)=>{
+            chai.request(server)
+            .get('//')
+            .end((err,res)=>{
+                res.should.have.status(200)
+            })  
+            done()   
+     })
+  })

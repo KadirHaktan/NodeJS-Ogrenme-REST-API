@@ -5,11 +5,15 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const db=require('./helper/databaseConnect')();
 const bodyparser=require('body-parser')
+const config=require('./config')
+const verifyToken=require('./middleware/verify-token')
+
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const movieRouter= require('./routes/movies');
 const directorRouter=require('./routes/directors')
+
 
 const app = express();
 
@@ -18,6 +22,7 @@ const app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.set('api_secret_key',config.secret_api_key)
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -26,6 +31,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyparser.json())
 app.use(bodyparser.urlencoded({extended:false}))
+
+app.use('/api',verifyToken)
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -48,6 +55,6 @@ app.use(function(err, req, res, next) {
   res.json({error:err.message});
 });
 
-app.listen(5022)
+app.listen(5025)
 
 module.exports = app;
